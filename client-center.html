@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Client Center | Portal, Uploads, Payments & Tax Dates | iTxRe</title>
+  <meta name="description" content="iTxRe client center: sign in to the client portal, upload documents securely, pay your invoice, and see upcoming tax deadlines.">
+  <meta name="theme-color" content="#12100e">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+<div id="site-header"></div>
+
+<main id="main">
+  <section class="page-hero" data-chalk="111">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span>/</span>Client Center</nav>
+      <span class="eyebrow">Existing clients</span>
+      <h1 class="h1">Everything you need, <em>in one place.</em></h1>
+      <p class="lead">Upload documents, pay invoices, and see what's due next — securely, and without a single email attachment.</p>
+      <div class="portal-grid" style="margin-top:56px">
+        <a class="portal" data-link="portalUrl"><i data-icon="lock"></i><h3>Client Portal</h3><p>Sign in to view returns, organizers, and engagement documents.</p><span class="link-arrow">Sign in <span data-icon="arrow"></span></span></a>
+        <a class="portal" data-link="uploadUrl"><i data-icon="upload"></i><h3>Secure File Upload</h3><p>Send W-2s, 1099s, K-1s, and statements through our encrypted portal.</p><span class="link-arrow">Upload files <span data-icon="arrow"></span></span></a>
+        <a class="portal" data-link="payUrl"><i data-icon="card"></i><h3>Make a Payment</h3><p>Pay your invoice online by card or bank transfer.</p><span class="link-arrow">Pay online <span data-icon="arrow"></span></span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="dates">
+    <div class="container faq">
+      <div class="faq__aside">
+        <span class="eyebrow">Key tax dates</span>
+        <h2 class="h2">What's due, <em class="accent">and when.</em></h2>
+        <p class="lead" style="margin:20px 0 28px">Common federal deadlines for the year ahead. When a date falls on a weekend or holiday, it moves to the next business day. Your client manager will remind you of the dates that apply to you.</p>
+        <a class="btn btn--dark" href="contact.html?topic=client">Questions? Contact your team <span data-icon="arrow"></span></a>
+      </div>
+      <div class="dates" id="date-list"></div>
+    </div>
+  </section>
+
+  <section class="section section--bone">
+    <div class="container">
+      <div class="section-head section-head--center"><span class="eyebrow">Getting ready to file</span><h2 class="h2">Your document <em class="accent">checklist.</em></h2><p class="lead">You'll receive a personalized list through our outreach process — here's what most clients gather.</p></div>
+      <div class="grid grid-3">
+        <div class="card reveal"><div class="card__icon" data-icon="doc"></div><h3>Income</h3><ul class="check-list"><li>W-2s and 1099s (NEC, INT, DIV, B, K)</li><li>Schedule K-1s from partnerships, S-corps &amp; trusts</li><li>Brokerage and equity compensation statements</li><li>Rental income and expense summaries</li></ul></div>
+        <div class="card reveal" data-delay="1"><div class="card__icon" data-icon="coins"></div><h3>Deductions</h3><ul class="check-list"><li>Mortgage interest (Form 1098)</li><li>Property tax and state estimated payments</li><li>Charitable contribution receipts</li><li>Retirement and HSA contributions</li></ul></div>
+        <div class="card reveal" data-delay="2"><div class="card__icon" data-icon="compass"></div><h3>Changes</h3><ul class="check-list"><li>Asset purchases or sales</li><li>Moves, marriages, or new dependents</li><li>New businesses or entities</li><li>IRS or state notices received</li></ul></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+<script src="assets/js/site.js"></script>
+<script>
+  // Point portal cards at the URLs configured in SITE (assets/js/site.js)
+  document.querySelectorAll("[data-link]").forEach((a) => (a.href = SITE[a.dataset.link]));
+
+  // Federal deadlines for the upcoming 12 months (weekend/holiday shifts not applied)
+  const DEADLINES = [
+    [0, 15, "Q4 estimated tax payment", "Individuals — prior-year fourth quarter", "Estimates"],
+    [2, 15, "S corporation & partnership returns", "Forms 1120-S and 1065, or extension", "Business"],
+    [3, 15, "Individual & C corporation returns", "Forms 1040 and 1120, plus Q1 estimate", "Filing"],
+    [5, 15, "Q2 estimated tax payment", "Individuals and corporations", "Estimates"],
+    [8, 15, "Extended business returns + Q3 estimate", "1120-S and 1065 on extension", "Business"],
+    [9, 15, "Extended individual returns", "Form 1040 on extension", "Filing"],
+  ];
+  const now = new Date(); now.setHours(0, 0, 0, 0);
+  const rows = DEADLINES.map(([m, d, title, sub, tag]) => {
+    let date = new Date(now.getFullYear(), m, d);
+    if (date < now) date = new Date(now.getFullYear() + 1, m, d);
+    return { date, title, sub, tag };
+  }).sort((a, b) => a.date - b.date);
+  document.getElementById("date-list").innerHTML = rows.map((r, i) => `
+    <div class="date-row reveal is-visible${i === 0 ? " is-next" : ""}">
+      <time datetime="${r.date.toISOString().slice(0, 10)}"><small>${r.date.toLocaleString("en-US", { month: "short" })} ${r.date.getFullYear()}</small>${r.date.getDate()}</time>
+      <div><strong>${r.title}</strong><span>${r.sub}</span></div>
+      <span class="badge">${i === 0 ? "Next up" : r.tag}</span>
+    </div>`).join("");
+</script>
+</body>
+</html>
